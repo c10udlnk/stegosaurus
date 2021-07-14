@@ -1,4 +1,7 @@
 # Stegosaurus
+
+> 添加对3.10的支持，用`python3.10 stegosaurus.py pyc文件名.pyc -x`进行payload的extract。
+
 ## A steganography tool for embedding payloads within Python bytecode.
 
 Stegosaurus is a [steganography tool](https://en.wikipedia.org/wiki/Steganography) 
@@ -59,7 +62,7 @@ Assume we wish to embed a payload in the bytecode of the following Python script
     
     if __name__ == "__main__":
         main()
-    
+
 
 The first step is to use Stegosaurus to see how many bytes our payload can contain without 
 changing the size of the carrier file.
@@ -73,7 +76,7 @@ bytecode:
 
     $ python3 -m stegosaurus example.py -s --payload "root pwd: 5+3g05aW"
     Payload embedded in carrier
-    
+
 Looking on disk, both the carrier file and original bytecode file have the same size:
 
     $ ls -l __pycache__/example.cpython-36*
@@ -105,7 +108,7 @@ payload:
     $ python3 __pycache__/example.cpython-36.pyc 
     144
     144
-
+    
     $ python3 __pycache__/example.cpython-36-stegosaurus.pyc 
     144
     144
@@ -115,7 +118,7 @@ not shown):
 
     $ python3 -m stegosaurus example.py -s --payload "PAYLOAD_IS_HERE"
     Payload embedded in carrier
-
+    
     $ strings __pycache__/example.cpython-36-stegosaurus.pyc 
     .Example carrier file to embed our payload in.
     fibV1)
@@ -132,10 +135,10 @@ not shown):
     
     __name__r
     <module>
-
+    
     $ python3 -m stegosaurus __pycache__/example.cpython-36-stegosaurus.pyc -x
     Extracted payload: PAYLOAD_IS_HERE
-    
+
 Sample output of Python's ```dis``` module, which shows no difference before and after 
 Stegosaurus embeds its payload:
 
@@ -243,7 +246,7 @@ Using ```dis``` with Python < 3.6 shows:
     15 RETURN_VALUE
     
     # :( no easy bytes to embed a payload
-    
+
 However with Python 3.6:
 
     0  LOAD_FAST                0 (n)
@@ -256,7 +259,7 @@ However with Python 3.6:
     14 RETURN_VALUE
     
     # :) easy bytes to embed a payload
-    
+
 Passing ```-vv``` to Stegosaurus we can see how the payload is embedded in these dead zones:
 
     $ python3 -m stegosaurus ../python_tests/loop.py -s -p "ABCDE" -vv
@@ -289,7 +292,6 @@ more dead zone identification as mentioned in the TODOs.
 * Add a ```-g``` option which will grow the size of the file to supported larger payloads 
   for users that are not concerned with a change in file size (for instance if Stegosaurus 
   is injected into a build pipeline)
-  
 #### Contributions
 
 Thanks to S0lll0s for:

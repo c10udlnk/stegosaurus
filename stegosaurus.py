@@ -85,7 +85,7 @@ def _extractPayload(mutableBytecodeStack, explodeAfter, logger):
             break
         payloadBytes.append(byte)
 
-    payload = str(payloadBytes, "utf8")
+    payload = str(payloadBytes)
 
     print("Extracted payload: {}".format(payload))
 
@@ -120,7 +120,10 @@ def _initLogger(args):
 def _loadBytecode(carrier, logger):
     try:
         f = open(carrier, "rb")
-        header = f.read(12)
+        if sys.version_info > (3, 7):
+            header = f.read(16)
+        else:
+            header = f.read(12)
         code = marshal.load(f)
         logger.debug("Read header and bytecode from carrier")
     finally:
