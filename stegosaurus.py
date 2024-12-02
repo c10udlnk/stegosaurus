@@ -1,6 +1,5 @@
 import argparse
 import logging
-import marshal
 import opcode
 import os
 import py_compile
@@ -8,6 +7,8 @@ import sys
 import math
 import string
 import types
+from xdis.magics import magic2int, magic_int2tuple
+from xdis.unmarshal import load_code
 
 if sys.version_info < (3, 6):
     sys.exit("Stegosaurus requires Python 3.6 or later")
@@ -120,11 +121,16 @@ def _initLogger(args):
 def _loadBytecode(carrier, logger):
     try:
         f = open(carrier, "rb")
-        if sys.version_info > (3, 7):
-            header = f.read(16)
-        else:
+        magicInt = magic2int(f.read(4))
+        pycVersion = magic_int2tuple(magicInt)
+        if pycVersion >= (3, 7, 0):
+            # pyc for Python 3.7+ has 16 bytes' header
             header = f.read(12)
-        code = marshal.load(f)
+        else:
+            # pyc for Python 3.6 has 12 bytes' header
+            header = f.read(8)
+        pycData = f.read()
+        code = load_code(pycData, magicInt)
         logger.debug("Read header and bytecode from carrier")
     finally:
         f.close()

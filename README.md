@@ -1,7 +1,5 @@
 # Stegosaurus
 
-> 添加对3.10的支持，用`python3.10 stegosaurus.py pyc文件名.pyc -x`进行payload的extract。
-
 ## A steganography tool for embedding payloads within Python bytecode.
 
 Stegosaurus is a [steganography tool](https://en.wikipedia.org/wiki/Steganography) 
